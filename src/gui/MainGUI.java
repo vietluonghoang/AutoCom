@@ -103,7 +103,7 @@ public class MainGUI {
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		JPanel profilePathPanel = new JPanel();
-		profilePathPanel.setLayout(new FlowLayout());
+		profilePathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(profilePathPanel);
 		JLabel lbProfilePath = new JLabel("Browser Profile Path: ");
 		JTextField txtProfilePath = new JTextField();
@@ -136,7 +136,7 @@ public class MainGUI {
 		profilePathPanel.add(txtProfilePath);
 		txtProfilePath.setText("/Users/vietlh/Library/Application Support/Firefox/Profiles/pa0a6807.user1");
 		JPanel victimProfileUrlPanel = new JPanel();
-		victimProfileUrlPanel.setLayout(new FlowLayout());
+		victimProfileUrlPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(victimProfileUrlPanel);
 		JLabel lbVictimProfileUrl = new JLabel("Victim Profile Page: ");
 		JTextField txtVictimProfileUrl = new JTextField();
@@ -165,11 +165,11 @@ public class MainGUI {
 
 		});
 		txtVictimProfileUrl.setPreferredSize(new Dimension(500, 20));
-		txtVictimProfileUrl.setText("https://www.facebook.com/tieu.caycay/");
+		txtVictimProfileUrl.setText("https://www.facebook.com/khanh.chap.71");
 		victimProfileUrlPanel.add(lbVictimProfileUrl);
 		victimProfileUrlPanel.add(txtVictimProfileUrl);
 		JPanel commentIntervalPanel = new JPanel();
-		commentIntervalPanel.setLayout(new FlowLayout());
+		commentIntervalPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(commentIntervalPanel);
 		JLabel lbCommentInterval = new JLabel("Comment Interval: ");
 		JTextField txtCommentInterval = new JTextField();
@@ -194,9 +194,11 @@ public class MainGUI {
 
 			public void updateCommentInterval() {
 				try {
-					GeneralSettings.commentInterval = Integer.parseInt(txtVictimProfileUrl.getText().trim());
+					MessageCenter.appendMessageToCenterLog("--- Checking comment interval...");
+					GeneralSettings.commentInterval = Integer.parseInt(txtCommentInterval.getText().trim());
+					MessageCenter.appendMessageToCenterLog("--- Updated comment interval!");
 				} catch (Exception e) {
-
+					MessageCenter.appendMessageToCenterLog("+++ Failed to check comment interval!");
 				}
 			}
 
@@ -205,6 +207,45 @@ public class MainGUI {
 		txtCommentInterval.setText("" + GeneralSettings.commentInterval);
 		commentIntervalPanel.add(lbCommentInterval);
 		commentIntervalPanel.add(txtCommentInterval);
+		JPanel maxCommentsPanel = new JPanel();
+		maxCommentsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		mainPanel.add(maxCommentsPanel);
+		JLabel lbMaxComment = new JLabel("Max comment per profile: ");
+		JTextField txtMaxComment = new JTextField();
+		txtMaxComment.getDocument().addDocumentListener((DocumentListener) new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updateMaxComment();
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updateMaxComment();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updateMaxComment();
+			}
+
+			public void updateMaxComment() {
+				try {
+					MessageCenter.appendMessageToCenterLog("--- Checking max comment...");
+					GeneralSettings.maxComment = Integer.parseInt(txtMaxComment.getText().trim());
+					MessageCenter.appendMessageToCenterLog("--- Updated max comment!");
+				} catch (Exception e) {
+					MessageCenter.appendMessageToCenterLog("+++ Failed to update max comment!");
+				}
+			}
+
+		});
+		txtMaxComment.setPreferredSize(new Dimension(50, 20));
+		txtMaxComment.setText("" + GeneralSettings.maxComment);
+		maxCommentsPanel.add(lbMaxComment);
+		maxCommentsPanel.add(txtMaxComment);
 		JPanel commentsPanel = new JPanel();
 		commentsPanel.setLayout(new FlowLayout());
 		mainPanel.add(commentsPanel);
@@ -247,7 +288,7 @@ public class MainGUI {
 
 		// init bottom panel
 		JPanel infoPanel = new JPanel();
-		infoPanel.setLayout(new FlowLayout());
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		frame.getContentPane().add(infoPanel, BorderLayout.SOUTH);
 		JPanel errorsPanel = new JPanel();
 		errorsPanel.setLayout(new FlowLayout());
@@ -255,6 +296,11 @@ public class MainGUI {
 		lbErrors.setForeground(Color.RED);
 		errorsPanel.add(lbErrors);
 		infoPanel.add(errorsPanel);
+		JPanel logTitlePanel = new JPanel();
+		logTitlePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		JLabel lblogTitle = new JLabel("Logs: ");
+		logTitlePanel.add(lblogTitle);
+		infoPanel.add(logTitlePanel);
 		JPanel logPanel = new JPanel();
 		JTextArea txtLogs = new JTextArea(10, 60);
 		DefaultCaret logCaret = (DefaultCaret) txtLogs.getCaret();

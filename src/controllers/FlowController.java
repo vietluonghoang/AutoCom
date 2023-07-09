@@ -101,6 +101,9 @@ public class FlowController implements Runnable {
 		MessageCenter.appendMessageToCenterLog("\t- comment boxes available: " + commentBoxes.size());
 		int commentBoxesSize = commentBoxes.size();
 		for (int i = 0; i < commentBoxesSize; i++) {
+			if (i >= GeneralSettings.maxComment) {
+				break;
+			}
 			// pick random comment from the list
 			String textToComment = commentsList.get(utils.getRandomNumber(0, commentsList.size() - 1));
 			// Wait before comment
