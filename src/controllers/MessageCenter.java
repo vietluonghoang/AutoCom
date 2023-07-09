@@ -1,5 +1,7 @@
 package controllers;
 
+import java.sql.Timestamp;
+
 import javax.swing.JTextArea;
 
 public class MessageCenter {
@@ -10,6 +12,7 @@ public class MessageCenter {
 	private static int maxLinesSideLog = 1000;
 	private static int centerLogLinesCounter = 0;
 	private static int sideLogLinesCounter = 0;
+	private static Timestamp timestamp;
 
 	public static String getAllCenterMessages() {
 		if (messageCenterTextArea != null) {
@@ -59,7 +62,7 @@ public class MessageCenter {
 				clearCenterLog();
 				centerLogLinesCounter = 0;
 			}
-			MessageCenter.messageCenterTextArea.append("\n" + message);
+			MessageCenter.messageCenterTextArea.append("\n" + appendTimestamp(message));
 			if (isAutoscroll) {
 				MessageCenter.messageCenterTextArea
 						.setCaretPosition(MessageCenter.messageCenterTextArea.getDocument().getLength());
@@ -74,12 +77,17 @@ public class MessageCenter {
 				clearSideLog();
 				sideLogLinesCounter = 0;
 			}
-			MessageCenter.messageSideTextArea.append("\n" + message);
+			MessageCenter.messageSideTextArea.append("\n" + appendTimestamp(message));
 			if (isAutoscroll) {
 				MessageCenter.messageSideTextArea
 						.setCaretPosition(MessageCenter.messageSideTextArea.getDocument().getLength());
 			}
 			sideLogLinesCounter += 1;
 		}
+	}
+
+	private static String appendTimestamp(String message) {
+		timestamp = new Timestamp(System.currentTimeMillis());
+		return timestamp + " - " + message;
 	}
 }

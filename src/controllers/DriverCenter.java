@@ -26,23 +26,25 @@ public class DriverCenter {
 			}
 		}
 	}
-	
+
 	public static WebDriver getNewChromeDriver() throws IOException {
 		WebDriver driver = new RunningDriver().chromeDriver();
 		appendDriver(driver);
 		return driver;
 	}
+
 	public static WebDriver getNewChromeDriver(String pathToProfileDir) throws IOException {
 		WebDriver driver = new RunningDriver().chromeDriver(pathToProfileDir);
 		appendDriver(driver);
 		return driver;
 	}
-	
+
 	public static WebDriver getNewFirefoxDriver() throws IOException {
 		WebDriver driver = new RunningDriver().firefoxDriver();
 		appendDriver(driver);
 		return driver;
 	}
+
 	public static WebDriver getNewFirefoxDriver(String pathToProfileDir) throws IOException {
 		WebDriver driver = new RunningDriver().firefoxDriver(pathToProfileDir);
 		appendDriver(driver);

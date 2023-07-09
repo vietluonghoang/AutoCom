@@ -10,4 +10,5 @@ public class GeneralSettings {
 
 	public static String resultPageUrl = "https://ketqua1.net/so-ket-qua";
 	public static int maxResultCount = 3;
+	public static int commentInterval = 300;
 }

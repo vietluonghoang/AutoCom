@@ -16,14 +16,19 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import controllers.MessageCenter;
+
 public class Utils {
 
+	// execute javascript
+	// pass driver and a string of script to execute
 	public String javascriptExecuter(WebDriver driver, String script) {
 		if (driver instanceof JavascriptExecutor) {
 			String result = (String) ((JavascriptExecutor) driver).executeScript(script);
@@ -33,8 +38,43 @@ public class Utils {
 		}
 	}
 
+	// execute javascript
+	// pass driver and a string of script to execute
+	// pass an object as the argumant
+	public String javascriptExecuter(WebDriver driver, String script, Object argument) {
+		if (driver instanceof JavascriptExecutor) {
+			String result = (String) ((JavascriptExecutor) driver).executeScript(script, argument);
+			return result;
+		} else {
+			throw new IllegalStateException("This driver does not support JavaScript!");
+		}
+	}
+
 	public String getCurrentFrame(WebDriver driver) {
 		return javascriptExecuter(driver, "return self.name");
+	}
+
+	public int getPageSize(WebDriver driver) {
+		for (WebElement body : driver.findElements(By.xpath("//body"))) {
+			return body.getSize().height;
+		}
+		return 0;
+	}
+
+	public void scrollUntilReachToBottom(WebDriver driver) {
+		MessageCenter.appendMessageToCenterLog("--- Scrolling to bottom...");
+		int currentHeight = getPageSize(driver);
+		scrollToBottom(driver);
+		WaitFor wait = new WaitFor(5);
+		try {
+			wait.waitForTimeout();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+		}
+		int lastHeight = getPageSize(driver);
+		if (lastHeight > currentHeight) {
+			scrollUntilReachToBottom(driver);
+		}
 	}
 
 	public void scrollToElement(WebElement element, WebDriver driver) {
@@ -79,6 +119,45 @@ public class Utils {
 
 	public void scrollToTop(WebDriver driver) {
 		javascriptExecuter(driver, "document.documentElement.scrollTop = 0;");
+	}
+
+	public void scrollToBottom(WebDriver driver) {
+		javascriptExecuter(driver, "window.scrollTo(0, document.body.scrollHeight);");
+	}
+
+	public void scrollToElementWithOffset(WebElement elementToScroll, WebDriver driver, int offset,
+			int delayAfterScroll) {
+		String script = "window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.scrollY - " + offset
+				+ ");";
+		if (driver instanceof JavascriptExecutor) {
+			((JavascriptExecutor) driver).executeScript(script, elementToScroll);
+		} else {
+			throw new IllegalStateException("This driver does not support JavaScript!");
+		}
+		WaitFor wait = new WaitFor(delayAfterScroll);
+		try {
+			wait.waitForTimeout();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+		}
+	}
+
+	public void scrollToElementWithOffsetThenClick(WebElement elementToScroll, WebDriver driver, int offset,
+			int delayBeforeClick) {
+		String script = "window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.scrollY - " + offset
+				+ ");";
+		if (driver instanceof JavascriptExecutor) {
+			((JavascriptExecutor) driver).executeScript(script, elementToScroll);
+		} else {
+			throw new IllegalStateException("This driver does not support JavaScript!");
+		}
+		WaitFor wait = new WaitFor(delayBeforeClick);
+		try {
+			wait.waitForTimeout();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+		}
+		elementToScroll.click();
 	}
 
 	public void scrollToElement(WebDriver driver, WebElement scrollWrapper, WebElement elementToScroll) {
@@ -241,6 +320,10 @@ public class Utils {
 		String populatedResult = removeInvisibleCharacters(result.trim()).trim().toLowerCase();
 
 		return populatedResult.substring(populatedResult.length() - 2);
+	}
+
+	public int getRandomNumber(int min, int max) {
+		return (int) ((Math.random() * (max - min)) + min);
 	}
 
 }

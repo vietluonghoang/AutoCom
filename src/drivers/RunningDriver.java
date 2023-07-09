@@ -11,6 +11,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
+import controllers.MessageCenter;
 import utils.Utils;
 
 public class RunningDriver {
@@ -23,13 +24,13 @@ public class RunningDriver {
 			executableDriverFileName = "chromedriver.exe";
 		}
 		String pathToChromeDriverExecutableFile = utils.copyFileToTempDir(executableDriverFileName);
-		System.out.println("pathToChromeDriverExecutableFile: " + pathToChromeDriverExecutableFile);
+		MessageCenter.appendMessageToCenterLog("pathToChromeDriverExecutableFile: " + pathToChromeDriverExecutableFile);
 
 		return pathToChromeDriverExecutableFile;
 	}
 
 	public WebDriver firefoxDriver() {
-		System.out.println("--- Initializing default Firefox browser");
+		MessageCenter.appendMessageToCenterLog("--- Initializing default Firefox browser");
 //		System.setProperty("webdriver.chrome.driver", pathToChromeDriver());
 		FirefoxOptions options = new FirefoxOptions();
 		options.addArguments("--disable-browser-side-navigation");
@@ -38,10 +39,11 @@ public class RunningDriver {
 		return driver;
 	}
 
-	//initialize WebDriver using existing profile
-	//to get profile path for Firefox, open a new tap, type "about:profiles" to the address bar, then can take the path from the Profile Path row
+	// initialize WebDriver using existing profile
+	// to get profile path for Firefox, open a new tap, type "about:profiles" to the
+	// address bar, then can take the path from the Profile Path row
 	public WebDriver firefoxDriver(String profilePath) {
-		System.out.println("--- Initializing Chrome browser with existing profile\n" + profilePath );
+		MessageCenter.appendMessageToCenterLog("--- Initializing Chrome browser with existing profile\n" + profilePath);
 
 		FirefoxOptions capabilities = new FirefoxOptions();
 		capabilities.addArguments("-profile", profilePath);
@@ -50,7 +52,7 @@ public class RunningDriver {
 	}
 
 	public WebDriver chromeDriver() throws IOException {
-		System.out.println("--- Initializing default Chrome browser");
+		MessageCenter.appendMessageToCenterLog("--- Initializing default Chrome browser");
 //		System.setProperty("webdriver.chrome.driver", pathToChromeDriver());
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-browser-side-navigation");
@@ -59,12 +61,13 @@ public class RunningDriver {
 		return driver;
 	}
 
-	//initialize WebDriver using existing profile
-	//to get profile path for Chrome, open a new tap, type "chrome://version" to the address bar, then can take the path from the Profile Path row
+	// initialize WebDriver using existing profile
+	// to get profile path for Chrome, open a new tap, type "chrome://version" to
+	// the address bar, then can take the path from the Profile Path row
 	public WebDriver chromeDriver(String profilePath) throws IOException {
 		String profileDir = profilePath.substring(profilePath.lastIndexOf("/") + 1);
 		String pathToProfileDir = profilePath.replace(profileDir, "");
-		System.out.println("--- Initializing Chrome browser with existing profile\n" + profilePath + "\n"
+		MessageCenter.appendMessageToCenterLog("--- Initializing Chrome browser with existing profile\n" + profilePath + "\n"
 				+ pathToProfileDir + "\n" + profileDir);
 //		System.setProperty("webdriver.chrome.driver", pathToChromeDriver());
 		ChromeOptions options = new ChromeOptions();

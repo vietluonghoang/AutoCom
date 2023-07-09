@@ -36,6 +36,30 @@ public class WaitFor {
 		timeoutInMiliseconds -= tickIntervalInMiliseconds;
 	}
 
+	public void waitForTimeout() throws Exception {
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String message = "\n=== Wait for timeout ";
+				if (timeoutInMiliseconds == 0) {
+					timer.cancel();
+					updateLockedState(false);
+				} else {
+					timeoutDeduction();
+				}
+			}
+		}, tickIntervalInMiliseconds, tickIntervalInMiliseconds);
+		while (isLocked) {
+			String loop = "\n---looping in locked for timeout";
+			Thread.sleep(tickIntervalInMiliseconds);
+			// loop until unlock
+			throwError("waitForTimeout");
+		}
+	}
+
 	public void waitForVisibilityById(WebDriver driver, String id) throws Exception {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
