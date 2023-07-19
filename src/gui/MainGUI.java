@@ -37,6 +37,7 @@ public class MainGUI {
 	private JLabel lbErrors;
 	private String profilePath = "";
 	private String victimProfileUrl = "";
+	private String pathToImagesFolder = "";
 	private String comments = "";
 	private WebDriver driver;
 
@@ -50,6 +51,7 @@ public class MainGUI {
 					MainGUI window = new MainGUI();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
+					MessageCenter.appendMessageToCenterLog(e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -68,7 +70,7 @@ public class MainGUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 800, 500);
+		frame.setBounds(50, 50, 800, 800);
 //		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -165,9 +167,45 @@ public class MainGUI {
 
 		});
 		txtVictimProfileUrl.setPreferredSize(new Dimension(500, 20));
-		txtVictimProfileUrl.setText("https://www.facebook.com/khanh.chap.71");
+		txtVictimProfileUrl.setText("https://www.facebook.com/anne.melson.37");
+//		txtVictimProfileUrl.setText("https://www.facebook.com/khanh.chap.71");
 		victimProfileUrlPanel.add(lbVictimProfileUrl);
 		victimProfileUrlPanel.add(txtVictimProfileUrl);
+		JPanel pathToImagesFolderPanel = new JPanel();
+		pathToImagesFolderPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		mainPanel.add(pathToImagesFolderPanel);
+		JLabel lbPathToImagesFolder = new JLabel("Path To Images Folder: ");
+		JTextField txtPathToImagesFolder = new JTextField();
+		txtPathToImagesFolder.getDocument().addDocumentListener((DocumentListener) new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updatePathToImagesFolder();
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updatePathToImagesFolder();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updatePathToImagesFolder();
+			}
+
+			public void updatePathToImagesFolder() {
+				pathToImagesFolder = txtPathToImagesFolder.getText().trim();
+				GeneralSettings.pathToImagesFolder = pathToImagesFolder;
+				MessageCenter.appendMessageToCenterLog("--- Updated path to images folder!");
+			}
+
+		});
+		txtPathToImagesFolder.setPreferredSize(new Dimension(500, 20));
+		txtPathToImagesFolder.setText("/Users/k33/Downloads/images");
+		pathToImagesFolderPanel.add(lbPathToImagesFolder);
+		pathToImagesFolderPanel.add(txtPathToImagesFolder);
 		JPanel commentIntervalPanel = new JPanel();
 		commentIntervalPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(commentIntervalPanel);
@@ -198,6 +236,7 @@ public class MainGUI {
 					GeneralSettings.commentInterval = Integer.parseInt(txtCommentInterval.getText().trim());
 					MessageCenter.appendMessageToCenterLog("--- Updated comment interval!");
 				} catch (Exception e) {
+					MessageCenter.appendMessageToCenterLog(e.getMessage());
 					MessageCenter.appendMessageToCenterLog("+++ Failed to check comment interval!");
 				}
 			}
@@ -237,6 +276,7 @@ public class MainGUI {
 					GeneralSettings.maxComment = Integer.parseInt(txtMaxComment.getText().trim());
 					MessageCenter.appendMessageToCenterLog("--- Updated max comment!");
 				} catch (Exception e) {
+					MessageCenter.appendMessageToCenterLog(e.getMessage());
 					MessageCenter.appendMessageToCenterLog("+++ Failed to update max comment!");
 				}
 			}
@@ -281,8 +321,13 @@ public class MainGUI {
 			}
 
 		});
-		txtComments.setText(
-				"Bạn rất biết lắng nghe. | Bạn thật mạnh mẽ | Công việc bạn đang làm thật tuyệt | Bạn thật truyền cảm hứng! | Bạn là một người bạn tốt! | Bạn có một trái tim ấm áp");
+		txtComments.setText("Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+				+ "Phạm Tuấn Khanh-Khanh Chập, trùm đâm thuê chém mướn núp dưới vỏ bọc doanh nhân,kẻ đứng sau chỉ đạo hàng loạt các vụ đâm thuê chém mướn,cố ý gây thương tích,gây rối trật tự, bắt giữ người trái phép, sử dụng vũ khí quân dụng uy hiếp, đe doạ tính mạng người dân,sau bao tội ác gây ra vẫn nhởn nhơ ngoài vòng pháp luật. Đằng sau vẻ bề ngoài hiền lành, lịch sự là 1 kẻ khát máu và tàn bạo.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+				+ "Khanh chập có mối quan hệ cực kỳ thân thiết và phức tạp với các trùm giang hồ cộm cán ở khắp các tỉnh thành đồng thời Y còn là chiến tướng, cánh tay phải đắc lực của trùm giang hồ khét tiếng Nam ngọ, ông trùm đường dây đánh bạc nghìn tỷ. Năm 2014 khanh chập tổ chức cầm đầu băng nhóm xã hội đen gồm hàng trăm đối tượng giang hồ nguy hiểm mang cái tên nhóm truy tìm khách nợ. Khanh chập trực tiếp chỉ đạo băng nhóm gây ra một loạt các vụ đâm chém, gây rối trật tự, dùng súng quân dụng thanh toán đối thủ,đòi nợ thuê và đâm thuê chém mướn gây nhức nhối trong dư luận tại thời điểm đó.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+				+ "Năm 2018 sau khi đường dây đánh bạc 1600 tỷ của ông trùm Nam Ngọ bị bộ công an triệt phá, Nam Ngọ bị bắt và phải đền tội, Khanh chập lẩn trốn vào sài gòn, ở đây với bản tính ngông cuồng, hung hãn và máu lạnh, hắn lại tiếp tục tổ chức và chỉ đạo băng ổ nhóm tín dụng đen hoạt động với quy mô lớn , cho vay nặng lãi và cưỡng đoạt tài sản, reo rắc kinh hoàng cho người dân ở khắp các quận huyện Thành Phố Hồ Chí Minh và các Tỉnh Miền Tây.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+				+ "Máu lạnh, hung hãn và ngông cuồng là những lời nhận xét về trùm đâm thuê chém mướn Khanh Chập. Ngoài đuổi cùng giết tận các đối thủ, hắn thậm chí còn sẵn sàng xuống tay một cách tàn bạo với các đàn em nếu ko nghe theo sự chỉ đạo của hắn. Với rất nhiều tội ác gây ra trong nhiều năm ở khắp các tỉnh thành từ Bắc vào Nam trong vai trò tổ chức và cầm đầu băng nhóm nhưng cứ khi cơ quan chức năng chuẩn bị vào cuộc là Khanh chập lại đột nhiên biến mất. Có hay không một thế lực ngầm đang chống lưng cho đối tượng đặc biệt nguy hiểm tác oai tác quái, ngang nghiên coi thường pháp luật.");
+//		txtComments.setText(
+//				"Bạn rất biết lắng nghe. | Bạn thật mạnh mẽ | Công việc bạn đang làm thật tuyệt | Bạn thật truyền cảm hứng! | Bạn là một người bạn tốt! | Bạn có một trái tim ấm áp");
 		commentsPanel.add(lbComments);
 		commentsPanel.add(jsp);
 
@@ -302,7 +347,7 @@ public class MainGUI {
 		logTitlePanel.add(lblogTitle);
 		infoPanel.add(logTitlePanel);
 		JPanel logPanel = new JPanel();
-		JTextArea txtLogs = new JTextArea(10, 60);
+		JTextArea txtLogs = new JTextArea(20, 60);
 		DefaultCaret logCaret = (DefaultCaret) txtLogs.getCaret();
 		logCaret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		txtLogs.setLineWrap(true);
@@ -340,6 +385,7 @@ public class MainGUI {
 							thread.start();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
+							MessageCenter.appendMessageToCenterLog(e.getMessage());
 							e.printStackTrace();
 						}
 						btnStart.setText("Stop");

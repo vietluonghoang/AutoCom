@@ -20,8 +20,12 @@ public class FlowController implements Runnable {
 //	private String urlTargetProfilePage = "https://www.facebook.com/profile.php?id=100013432717257";
 
 	private String xpathLogoutForm = "//form[contains(@action,'logout.php')]";
-	private String xpathCommentBoxes = "//div[./div/div/ul/li/span/div[@aria-label='Comment with an avatar sticker']]/div/div/div/div[contains(@aria-label,'Write a comment')]";
-	private String xpathFriendCard = "//div[./*/*/*/div/h2/span/a[contains(text(),'Friends')]]/div/div/div/div/a[span]";
+//	private String xpathCommentBoxes = "//div[./div/div/ul/li/span/div[@aria-label='Comment with an avatar sticker']]/div/div/div/div[contains(@aria-label,'Write a comment')]";
+	private String xpathCommentBoxes = "//div[./div/div/ul/li/span/div[contains(@aria-label,'Chèn một biểu tượng cảm xúc') or contains(@aria-label,'Comment with an avatar sticker')]]/div/div/div/div[contains(@aria-label,'Viết bình luận') or contains(@aria-label,'Write a comment')]";
+//	private String xpathFriendCard = "//div[./*/*/*/div/h2/span/a[contains(text(),'Friends')]]/div/div/div/div/a[span]";
+	private String xpathFriendCard = "//div[./*/*/*/div/h2/span/a[contains(text(),'Bạn bè') or contains(text(),'Friends')]]/div/div/div/div/a[span]";
+	private String xpathToAttachImageUnderCommentBoxes = "../../../div/ul/li[./span/div[contains(@aria-label,'Attach a photo or video')]]/input";
+	private String xpathSendButton = "//div[@id='focused-state-composer-submit']/span/div";
 	private FaceAccount targetAccount;
 	private ArrayList<String> commentsList;
 	private Utils utils = new Utils();
@@ -42,7 +46,7 @@ public class FlowController implements Runnable {
 			waitForLogIn.waitForVisibilityByXpath(driver, xpathLogoutForm);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-
+			MessageCenter.appendMessageToCenterLog(e.getMessage());
 		}
 		if (isLoggedIn()) {
 			// get all target friends first
@@ -77,10 +81,13 @@ public class FlowController implements Runnable {
 			wait.waitForTimeout();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			MessageCenter.appendMessageToCenterLog(e.getMessage());
 		}
 		// scroll toward the bottom of the page to load all friends first
 		utils.scrollUntilReachToBottom(driver);
-		for (WebElement friend : driver.findElements(By.xpath(xpathFriendCard))) {
+		List<WebElement> friendsList = driver.findElements(By.xpath(xpathFriendCard));
+		MessageCenter.appendMessageToCenterLog("--+ Friend List size: " + friendsList.size());
+		for (WebElement friend : friendsList) {
 			targetAccount.addFriendToList(new FaceAccount(friend.getAttribute("href")));
 		}
 	}
@@ -95,7 +102,7 @@ public class FlowController implements Runnable {
 			wait.waitForTimeout();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-
+			MessageCenter.appendMessageToCenterLog(e.getMessage());
 		}
 		List<WebElement> commentBoxes = driver.findElements(By.xpath(xpathCommentBoxes));
 		MessageCenter.appendMessageToCenterLog("\t- comment boxes available: " + commentBoxes.size());
@@ -107,11 +114,12 @@ public class FlowController implements Runnable {
 			// pick random comment from the list
 			String textToComment = commentsList.get(utils.getRandomNumber(0, commentsList.size() - 1));
 			// Wait before comment
-			wait = new WaitFor(GeneralSettings.commentInterval);
+			wait = new WaitFor(5);
 			try {
 				wait.waitForTimeout();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				MessageCenter.appendMessageToCenterLog(e.getMessage());
 			}
 			commentBoxes = driver.findElements(By.xpath(xpathCommentBoxes));
 			utils.scrollToElementWithOffsetThenClick(commentBoxes.get(i), driver, 150, 5);
@@ -121,7 +129,10 @@ public class FlowController implements Runnable {
 				wait.waitForTimeout();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				MessageCenter.appendMessageToCenterLog(e.getMessage());
 			}
+
+			// send text to the comment box
 			utils.scrollToElementWithOffset(commentBoxes.get(i), driver, 200, 5);
 			// add unix timestamp to comment text to avoid duplication
 			textToComment += "\n" + System.currentTimeMillis() / 1000L;
@@ -129,7 +140,46 @@ public class FlowController implements Runnable {
 			MessageCenter.appendMessageToCenterLog("+ sent comment in the boxes: \n" + commentBoxes.get(i).getText());
 			utils.scrollToElementWithOffset(commentBoxes.get(i), driver, 200, 5);
 
-			// TODO: need send action
+			List<WebElement> attachImageButtons = commentBoxes.get(i)
+					.findElements(By.xpath(xpathToAttachImageUnderCommentBoxes));
+			MessageCenter.appendMessageToCenterLog("+ finding the attach image button: " + attachImageButtons.size());
+
+			MessageCenter.appendMessageToCenterLog("--- Scanning images folder: " + GeneralSettings.pathToImagesFolder);
+			ArrayList<String> expectedFileExtensions = new ArrayList<>();
+			expectedFileExtensions.add("png");
+			expectedFileExtensions.add("jpg");
+			expectedFileExtensions.add("jpeg");
+			ArrayList<String> pathToImages = utils.getAllFileFromFolderByExtension(GeneralSettings.pathToImagesFolder,
+					expectedFileExtensions);
+
+			for (WebElement attImgBtn : attachImageButtons) {
+				// randomize images
+				String imagePath = pathToImages.get(utils.getRandomNumber(0, pathToImages.size() - 1));
+				MessageCenter.appendMessageToCenterLog("--- Attaching image: \n\t" + imagePath);
+				attImgBtn.sendKeys(imagePath);
+			}
+
+			// Wait for the image to upload
+			wait = new WaitFor(30);
+			try {
+				wait.waitForTimeout();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				MessageCenter.appendMessageToCenterLog(e.getMessage());
+			}
+
+//			// click on the send comment button
+//			for (WebElement sendButton : driver.findElements(By.xpath(xpathSendButton))) {
+//				sendButton.click();
+//			}
+			// delay after sending a comment
+			wait = new WaitFor(GeneralSettings.commentInterval);
+			try {
+				wait.waitForTimeout();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				MessageCenter.appendMessageToCenterLog(e.getMessage());
+			}
 		}
 	}
 

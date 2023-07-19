@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -64,14 +65,17 @@ public class Utils {
 	public void scrollUntilReachToBottom(WebDriver driver) {
 		MessageCenter.appendMessageToCenterLog("--- Scrolling to bottom...");
 		int currentHeight = getPageSize(driver);
+		MessageCenter.appendMessageToCenterLog("--- Current Height: " + currentHeight);
 		scrollToBottom(driver);
 		WaitFor wait = new WaitFor(5);
 		try {
 			wait.waitForTimeout();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			MessageCenter.appendMessageToCenterLog(e.getMessage());
 		}
 		int lastHeight = getPageSize(driver);
+		MessageCenter.appendMessageToCenterLog("--- Last Height: " + lastHeight);
 		if (lastHeight > currentHeight) {
 			scrollUntilReachToBottom(driver);
 		}
@@ -139,6 +143,7 @@ public class Utils {
 			wait.waitForTimeout();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			MessageCenter.appendMessageToCenterLog(e.getMessage());
 		}
 	}
 
@@ -156,6 +161,7 @@ public class Utils {
 			wait.waitForTimeout();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			MessageCenter.appendMessageToCenterLog(e.getMessage());
 		}
 		elementToScroll.click();
 	}
@@ -326,4 +332,70 @@ public class Utils {
 		return (int) ((Math.random() * (max - min)) + min);
 	}
 
+	public ArrayList<String> getAllFileFromFolder(String folderPath) {
+		File folder = new File(folderPath);
+		ArrayList<String> allFilePaths = new ArrayList<String>();
+		if (folder.isDirectory()) {
+			File[] allFiles = folder.listFiles();
+			if (allFiles != null) {
+				for (int i = 0; i < allFiles.length; i++) {
+					File file = allFiles[i];
+					if (file.isFile()) {
+						allFilePaths.add(file.getAbsolutePath());
+						MessageCenter.appendMessageToCenterLog("+ Added a file path: \n\t" + file.getAbsolutePath());
+					} else {
+						MessageCenter.appendMessageToCenterLog("+ Not a file: " + file.getName());
+					}
+				}
+			} else {
+				MessageCenter.appendMessageToCenterLog("+ Folder is empty: " + folder.getName());
+			}
+		} else {
+			MessageCenter.appendMessageToCenterLog("+ Not a folder: " + folder.getName());
+		}
+		return allFilePaths;
+	}
+
+	public ArrayList<String> getAllFileFromFolderByExtension(String folderPath, ArrayList<String> extensionList) {
+		File folder = new File(folderPath);
+		ArrayList<String> allFilePaths = new ArrayList<String>();
+		if (folder.isDirectory()) {
+			File[] allFiles = folder.listFiles();
+			if (allFiles != null) {
+				for (int i = 0; i < allFiles.length; i++) {
+					File file = allFiles[i];
+					if (file.isFile()) {
+						for (String ext : extensionList) {
+							if (getFileExtension(file.getName()).equals(ext.toLowerCase())) {
+								allFilePaths.add(file.getAbsolutePath());
+								MessageCenter
+										.appendMessageToCenterLog("+ Added a file path: \n\t" + file.getAbsolutePath());
+								break;
+							} else {
+								MessageCenter.appendMessageToCenterLog(
+										"+ Not the expected file type. Not added:" + file.getName() + "/" + ext);
+							}
+						}
+					} else {
+						MessageCenter.appendMessageToCenterLog("+ Not a file: " + file.getName());
+					}
+				}
+			} else {
+				MessageCenter.appendMessageToCenterLog("+ Folder is empty: " + folder.getName());
+			}
+		} else {
+			MessageCenter.appendMessageToCenterLog("+ Not a folder: " + folder.getName());
+		}
+		return allFilePaths;
+	}
+
+	public String getFileExtension(String fileName) {
+		String extension = "";
+
+		int i = fileName.lastIndexOf('.');
+		if (i > 0) {
+			extension = fileName.substring(i + 1);
+		}
+		return extension.toLowerCase();
+	}
 }

@@ -6,6 +6,8 @@ import java.util.TimerTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import controllers.MessageCenter;
+
 public class WaitFor {
 	private boolean isLocked = true;
 	private long tickIntervalInMiliseconds = 500;
@@ -28,7 +30,7 @@ public class WaitFor {
 
 	private void throwError(String details) throws Exception {
 		if (timeoutInMiliseconds == 0) {
-			throw new Exception("\n===WaitFor: Timeout error\n" + details);
+			throw new Exception("===WaitFor: Timeout error\n" + details);
 		}
 	}
 
@@ -43,7 +45,10 @@ public class WaitFor {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String message = "\n=== Wait for timeout ";
+//				String message = "\n=== Wait for timeout ";
+//				MessageCenter.appendMessageToCenterLog(message);
+
+				// check until the condition is matched or time out is reached
 				if (timeoutInMiliseconds == 0) {
 					timer.cancel();
 					updateLockedState(false);
@@ -53,10 +58,11 @@ public class WaitFor {
 			}
 		}, tickIntervalInMiliseconds, tickIntervalInMiliseconds);
 		while (isLocked) {
-			String loop = "\n---looping in locked for timeout";
+//			String loop = "\n---looping in locked for timeout";
+//			MessageCenter.appendMessageToCenterLog(loop);
 			Thread.sleep(tickIntervalInMiliseconds);
 			// loop until unlock
-			throwError("waitForTimeout");
+			throwError("- Timeout!");
 		}
 	}
 
@@ -67,7 +73,10 @@ public class WaitFor {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String message = "\n=== Checking for visibility by id: " + id;
+//				String message = "\n=== Checking for visibility by id: " + id;
+//				MessageCenter.appendMessageToCenterLog(message);
+
+				// check until the condition is matched or time out is reached
 				if ((driver.findElements(By.id(id)).size() > 0) || timeoutInMiliseconds == 0) {
 					timer.cancel();
 					updateLockedState(false);
@@ -77,10 +86,11 @@ public class WaitFor {
 			}
 		}, tickIntervalInMiliseconds, tickIntervalInMiliseconds);
 		while (isLocked) {
-			String loop = "\n---looping in locked for visibility by id: " + id;
+//			String loop = "\n---looping in locked for visibility by id: " + id;
+//			MessageCenter.appendMessageToCenterLog(loop);
 			Thread.sleep(tickIntervalInMiliseconds);
 			// loop until unlock
-			throwError("waitForVisibilityById: " + id);
+			throwError("- Timeout - Failed to Wait For Visibility By Id: " + id);
 		}
 	}
 
@@ -91,7 +101,9 @@ public class WaitFor {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String message = "\n=== Checking for visibility by xpath: " + xpath;
+//				String message = "\n=== Checking for visibility by xpath: " + xpath;
+//				MessageCenter.appendMessageToCenterLog(message);
+				// check until the condition is matched or time out is reached
 				if ((driver.findElements(By.xpath(xpath)).size() > 0) || timeoutInMiliseconds == 0) {
 					timer.cancel();
 					updateLockedState(false);
@@ -101,10 +113,11 @@ public class WaitFor {
 			}
 		}, tickIntervalInMiliseconds, tickIntervalInMiliseconds);
 		while (isLocked) {
-			String loopMessage = "\n---looping in locked for visibility by xpath: " + xpath;
+//			String loopMessage = "\n---looping in locked for visibility by xpath: " + xpath;
+//			MessageCenter.appendMessageToCenterLog(loopMessage);
 			Thread.sleep(tickIntervalInMiliseconds);
 			// loop until unlock
-			throwError("waitForVisibilityByXpath: " + xpath);
+			throwError("- Timeout - Failed to Wait For Visibility By Xpath: " + xpath);
 		}
 	}
 
