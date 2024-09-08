@@ -7,10 +7,13 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,6 +38,7 @@ public class MainGUI {
 	private JButton btnStart;
 	private JButton btnStop;
 	private JLabel lbErrors;
+	private boolean isCommunityProfile;
 	private String profilePath = "";
 	private String victimProfileUrl = "";
 	private String pathToImagesFolder = "";
@@ -140,7 +144,7 @@ public class MainGUI {
 		JPanel victimProfileUrlPanel = new JPanel();
 		victimProfileUrlPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(victimProfileUrlPanel);
-		JLabel lbVictimProfileUrl = new JLabel("Victim Profile Page: ");
+		JLabel lbVictimProfileUrl = new JLabel("FB Profile URL: ");
 		JTextField txtVictimProfileUrl = new JTextField();
 		txtVictimProfileUrl.getDocument().addDocumentListener((DocumentListener) new DocumentListener() {
 			@Override
@@ -167,10 +171,24 @@ public class MainGUI {
 
 		});
 		txtVictimProfileUrl.setPreferredSize(new Dimension(500, 20));
-		txtVictimProfileUrl.setText("https://www.facebook.com/anne.melson.37");
-//		txtVictimProfileUrl.setText("https://www.facebook.com/khanh.chap.71");
+		txtVictimProfileUrl.setText("https://www.facebook.com/groups/congdonghieuluat");
+//		txtVictimProfileUrl.setText("https://www.facebook.com/anne.melson.37");
+		JCheckBox cbCommunity = new JCheckBox("Is Community");
+		cbCommunity.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+				if (cbCommunity.isSelected()) {
+					isCommunityProfile = true;
+				} else {
+					isCommunityProfile = false;
+				}
+			}
+		});
+		cbCommunity.setSelected(true);
 		victimProfileUrlPanel.add(lbVictimProfileUrl);
 		victimProfileUrlPanel.add(txtVictimProfileUrl);
+		victimProfileUrlPanel.add(cbCommunity);
 		JPanel pathToImagesFolderPanel = new JPanel();
 		pathToImagesFolderPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(pathToImagesFolderPanel);
@@ -249,7 +267,7 @@ public class MainGUI {
 		JPanel maxCommentsPanel = new JPanel();
 		maxCommentsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(maxCommentsPanel);
-		JLabel lbMaxComment = new JLabel("Max comment per profile: ");
+		JLabel lbMaxComment = new JLabel("Max comment per post: ");
 		JTextField txtMaxComment = new JTextField();
 		txtMaxComment.getDocument().addDocumentListener((DocumentListener) new DocumentListener() {
 			@Override
@@ -286,6 +304,43 @@ public class MainGUI {
 		txtMaxComment.setText("" + GeneralSettings.maxComment);
 		maxCommentsPanel.add(lbMaxComment);
 		maxCommentsPanel.add(txtMaxComment);
+		JLabel lbMaxPost = new JLabel("Max post to comment: ");
+		JTextField txtMaxPost = new JTextField();
+		txtMaxPost.getDocument().addDocumentListener((DocumentListener) new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updateMaxPost();
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updateMaxPost();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				updateMaxPost();
+			}
+
+			public void updateMaxPost() {
+				try {
+					MessageCenter.appendMessageToCenterLog("--- Checking max post...");
+					GeneralSettings.maxPostToComment = Integer.parseInt(txtMaxPost.getText().trim());
+					MessageCenter.appendMessageToCenterLog("--- Updated max post!");
+				} catch (Exception e) {
+					MessageCenter.appendMessageToCenterLog(e.getMessage());
+					MessageCenter.appendMessageToCenterLog("+++ Failed to update max post!");
+				}
+			}
+
+		});
+		txtMaxPost.setPreferredSize(new Dimension(50, 20));
+		txtMaxPost.setText("" + GeneralSettings.maxPostToComment);
+		maxCommentsPanel.add(lbMaxPost);
+		maxCommentsPanel.add(txtMaxPost);
 		JPanel commentsPanel = new JPanel();
 		commentsPanel.setLayout(new FlowLayout());
 		mainPanel.add(commentsPanel);
@@ -321,13 +376,13 @@ public class MainGUI {
 			}
 
 		});
-		txtComments.setText("Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
-				+ "Phạm Tuấn Khanh-Khanh Chập, trùm đâm thuê chém mướn núp dưới vỏ bọc doanh nhân,kẻ đứng sau chỉ đạo hàng loạt các vụ đâm thuê chém mướn,cố ý gây thương tích,gây rối trật tự, bắt giữ người trái phép, sử dụng vũ khí quân dụng uy hiếp, đe doạ tính mạng người dân,sau bao tội ác gây ra vẫn nhởn nhơ ngoài vòng pháp luật. Đằng sau vẻ bề ngoài hiền lành, lịch sự là 1 kẻ khát máu và tàn bạo.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
-				+ "Khanh chập có mối quan hệ cực kỳ thân thiết và phức tạp với các trùm giang hồ cộm cán ở khắp các tỉnh thành đồng thời Y còn là chiến tướng, cánh tay phải đắc lực của trùm giang hồ khét tiếng Nam ngọ, ông trùm đường dây đánh bạc nghìn tỷ. Năm 2014 khanh chập tổ chức cầm đầu băng nhóm xã hội đen gồm hàng trăm đối tượng giang hồ nguy hiểm mang cái tên nhóm truy tìm khách nợ. Khanh chập trực tiếp chỉ đạo băng nhóm gây ra một loạt các vụ đâm chém, gây rối trật tự, dùng súng quân dụng thanh toán đối thủ,đòi nợ thuê và đâm thuê chém mướn gây nhức nhối trong dư luận tại thời điểm đó.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
-				+ "Năm 2018 sau khi đường dây đánh bạc 1600 tỷ của ông trùm Nam Ngọ bị bộ công an triệt phá, Nam Ngọ bị bắt và phải đền tội, Khanh chập lẩn trốn vào sài gòn, ở đây với bản tính ngông cuồng, hung hãn và máu lạnh, hắn lại tiếp tục tổ chức và chỉ đạo băng ổ nhóm tín dụng đen hoạt động với quy mô lớn , cho vay nặng lãi và cưỡng đoạt tài sản, reo rắc kinh hoàng cho người dân ở khắp các quận huyện Thành Phố Hồ Chí Minh và các Tỉnh Miền Tây.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
-				+ "Máu lạnh, hung hãn và ngông cuồng là những lời nhận xét về trùm đâm thuê chém mướn Khanh Chập. Ngoài đuổi cùng giết tận các đối thủ, hắn thậm chí còn sẵn sàng xuống tay một cách tàn bạo với các đàn em nếu ko nghe theo sự chỉ đạo của hắn. Với rất nhiều tội ác gây ra trong nhiều năm ở khắp các tỉnh thành từ Bắc vào Nam trong vai trò tổ chức và cầm đầu băng nhóm nhưng cứ khi cơ quan chức năng chuẩn bị vào cuộc là Khanh chập lại đột nhiên biến mất. Có hay không một thế lực ngầm đang chống lưng cho đối tượng đặc biệt nguy hiểm tác oai tác quái, ngang nghiên coi thường pháp luật.");
-//		txtComments.setText(
-//				"Bạn rất biết lắng nghe. | Bạn thật mạnh mẽ | Công việc bạn đang làm thật tuyệt | Bạn thật truyền cảm hứng! | Bạn là một người bạn tốt! | Bạn có một trái tim ấm áp");
+//		txtComments.setText("Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+//				+ "Phạm Tuấn Khanh-Khanh Chập, trùm đâm thuê chém mướn núp dưới vỏ bọc doanh nhân,kẻ đứng sau chỉ đạo hàng loạt các vụ đâm thuê chém mướn,cố ý gây thương tích,gây rối trật tự, bắt giữ người trái phép, sử dụng vũ khí quân dụng uy hiếp, đe doạ tính mạng người dân,sau bao tội ác gây ra vẫn nhởn nhơ ngoài vòng pháp luật. Đằng sau vẻ bề ngoài hiền lành, lịch sự là 1 kẻ khát máu và tàn bạo.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+//				+ "Khanh chập có mối quan hệ cực kỳ thân thiết và phức tạp với các trùm giang hồ cộm cán ở khắp các tỉnh thành đồng thời Y còn là chiến tướng, cánh tay phải đắc lực của trùm giang hồ khét tiếng Nam ngọ, ông trùm đường dây đánh bạc nghìn tỷ. Năm 2014 khanh chập tổ chức cầm đầu băng nhóm xã hội đen gồm hàng trăm đối tượng giang hồ nguy hiểm mang cái tên nhóm truy tìm khách nợ. Khanh chập trực tiếp chỉ đạo băng nhóm gây ra một loạt các vụ đâm chém, gây rối trật tự, dùng súng quân dụng thanh toán đối thủ,đòi nợ thuê và đâm thuê chém mướn gây nhức nhối trong dư luận tại thời điểm đó.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+//				+ "Năm 2018 sau khi đường dây đánh bạc 1600 tỷ của ông trùm Nam Ngọ bị bộ công an triệt phá, Nam Ngọ bị bắt và phải đền tội, Khanh chập lẩn trốn vào sài gòn, ở đây với bản tính ngông cuồng, hung hãn và máu lạnh, hắn lại tiếp tục tổ chức và chỉ đạo băng ổ nhóm tín dụng đen hoạt động với quy mô lớn , cho vay nặng lãi và cưỡng đoạt tài sản, reo rắc kinh hoàng cho người dân ở khắp các quận huyện Thành Phố Hồ Chí Minh và các Tỉnh Miền Tây.|Thế lực nào đang bảo kê, chống lưng cho tội ác?\n"
+//				+ "Máu lạnh, hung hãn và ngông cuồng là những lời nhận xét về trùm đâm thuê chém mướn Khanh Chập. Ngoài đuổi cùng giết tận các đối thủ, hắn thậm chí còn sẵn sàng xuống tay một cách tàn bạo với các đàn em nếu ko nghe theo sự chỉ đạo của hắn. Với rất nhiều tội ác gây ra trong nhiều năm ở khắp các tỉnh thành từ Bắc vào Nam trong vai trò tổ chức và cầm đầu băng nhóm nhưng cứ khi cơ quan chức năng chuẩn bị vào cuộc là Khanh chập lại đột nhiên biến mất. Có hay không một thế lực ngầm đang chống lưng cho đối tượng đặc biệt nguy hiểm tác oai tác quái, ngang nghiên coi thường pháp luật.");
+		txtComments.setText(
+				"Bạn rất biết lắng nghe. | Bạn thật mạnh mẽ | Công việc bạn đang làm thật tuyệt | Bạn thật truyền cảm hứng! | Bạn là một người bạn tốt! | Bạn có một trái tim ấm áp");
 		commentsPanel.add(lbComments);
 		commentsPanel.add(jsp);
 
@@ -380,7 +435,8 @@ public class MainGUI {
 							} else {
 								driver = DriverCenter.getNewFirefoxDriver();
 							}
-							FlowController flow = new FlowController(driver, victimProfileUrl, comments);
+							FlowController flow = new FlowController(driver, victimProfileUrl, isCommunityProfile,
+									comments);
 							Thread thread = new Thread(flow);
 							thread.start();
 						} catch (IOException e) {

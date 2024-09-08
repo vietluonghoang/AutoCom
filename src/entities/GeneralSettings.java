@@ -9,7 +9,8 @@ public class GeneralSettings {
 	public static boolean isStartedRunning = false;
 
 	public static int maxResultCount = 5;
-	public static int commentInterval = 600;
+	public static int commentInterval = 1;
 	public static int maxComment = 1;
+	public static int maxPostToComment = 5;
 	public static String pathToImagesFolder = "";
 }

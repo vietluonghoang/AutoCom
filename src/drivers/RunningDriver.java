@@ -43,7 +43,8 @@ public class RunningDriver {
 	// to get profile path for Firefox, open a new tap, type "about:profiles" to the
 	// address bar, then can take the path from the Profile Path row
 	public WebDriver firefoxDriver(String profilePath) {
-		MessageCenter.appendMessageToCenterLog("--- Initializing Chrome browser with existing profile\n" + profilePath);
+		MessageCenter
+				.appendMessageToCenterLog("--- Initializing Firefox browser with existing profile\n" + profilePath);
 
 		FirefoxOptions capabilities = new FirefoxOptions();
 		capabilities.addArguments("-profile", profilePath);
@@ -67,8 +68,8 @@ public class RunningDriver {
 	public WebDriver chromeDriver(String profilePath) throws IOException {
 		String profileDir = profilePath.substring(profilePath.lastIndexOf("/") + 1);
 		String pathToProfileDir = profilePath.replace(profileDir, "");
-		MessageCenter.appendMessageToCenterLog("--- Initializing Chrome browser with existing profile\n" + profilePath + "\n"
-				+ pathToProfileDir + "\n" + profileDir);
+		MessageCenter.appendMessageToCenterLog("--- Initializing Chrome browser with existing profile\n" + profilePath
+				+ "\n" + pathToProfileDir + "\n" + profileDir);
 //		System.setProperty("webdriver.chrome.driver", pathToChromeDriver());
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--user-data-dir=" + pathToProfileDir);
