@@ -31,7 +31,6 @@ public class RunningDriver {
 
 	public WebDriver firefoxDriver() {
 		MessageCenter.appendMessageToCenterLog("--- Initializing default Firefox browser");
-//		System.setProperty("webdriver.chrome.driver", pathToChromeDriver());
 		FirefoxOptions options = new FirefoxOptions();
 		options.addArguments("--disable-browser-side-navigation");
 		options.addArguments("--disable-gpu");

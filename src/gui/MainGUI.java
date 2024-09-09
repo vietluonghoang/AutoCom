@@ -140,7 +140,8 @@ public class MainGUI {
 		});
 		profilePathPanel.add(lbProfilePath);
 		profilePathPanel.add(txtProfilePath);
-		txtProfilePath.setText("/Users/vietlh/Library/Application Support/Firefox/Profiles/pa0a6807.user1");
+//		txtProfilePath.setText("/Users/vietlh/Library/Application Support/Firefox/Profiles/pa0a6807.user1");
+		txtProfilePath.setText("/Users/vietcat/Library/Application Support/Firefox/Profiles/9hpnhcnz.default-release");
 		JPanel victimProfileUrlPanel = new JPanel();
 		victimProfileUrlPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		mainPanel.add(victimProfileUrlPanel);
